@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Using boomerang</title>
+<link rel="stylesheet" href="02-1-restiming.css">
+<script src="http://www.lognormal.com/boomerang/boomerang.js"></script>
+<script src="http://www.lognormal.com/boomerang/plugins/navtiming.js"></script>
+<script src="http://www.lognormal.com/boomerang/plugins/restiming.js"></script>
+<script>
+BOOMR.init({auto_run: false});
+var start = new Date().getTime();
+function addScript(url) {
+	var s = document.createElement("script");
+	s.src=url;
+	var where = document.getElementsByTagName("script")[0];
+	where.parentNode.insertBefore(s, where);
+}
+
+addScript("02-3-restiming.js");
+window.addEventListener("load", function() { addScript("02-4-restiming.js"); }, false);
+window.setTimeout(function() { addScript("02-5-restiming.js"); }, 3000);
+
+BOOMR.subscribe('before_beacon', function(o) {
+	var html = "", others = [];
+
+	if(!o.t_other) o.t_other = "";
+
+	for(var k in o) {
+		if (typeof o[k] === "object" && o[k].length) {
+			others.push(k + " => ");
+			for (var i=0; i<o[k].length; i++) {
+				others.push("[");
+				for (var j in o[k][i]) {
+					others.push("    " + j + " = " + o[k][i][j]);
+				}
+				others.push("]");
+			}
+		}
+		else {
+			others.push(k + " = " + o[k]);
+		}
+	}
+
+	var r = document.getElementById('results');
+	r.innerHTML = html;
+
+	if(others.length) {
+		r.innerHTML += "Parameters:<br>";
+
+		for(var i=0; i<others.length; i++) {
+			var t = document.createTextNode(others[i]);
+			r.innerHTML += "&nbsp;&nbsp;&nbsp;";
+			r.appendChild(t);
+			r.innerHTML += "<br>";
+
+		}
+	}
+
+});
+
+</script>
+</head>
+<body>
+<img src="http://cdn.oreillystatic.com/en/assets/1/eventseries/11/velocity_franchise_logo.png">
+<pre id="results">
+</pre>
+</body>
+</html>
+
