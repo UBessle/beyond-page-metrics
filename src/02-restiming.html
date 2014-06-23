@@ -5,6 +5,32 @@
 <link rel="stylesheet" href="02-1-restiming.css">
 <script src="02-2-restiming.js"></script>
 <script>
+(function(){
+  var dom,doc,where,iframe = document.createElement('iframe');
+  iframe.src = "javascript:false";
+  (iframe.frameElement || iframe).style.cssText = "width:0;height:0;border:0;display:none;";
+  where = document.getElementsByTagName('script')[0];
+  where.parentNode.insertBefore(iframe, where);
+
+  try {
+    doc = iframe.contentWindow.document;
+  } catch(e) {
+    dom = document.domain;
+    iframe.src="javascript:var d=document.open();d.domain='"+dom+"';void(0);";
+    doc = iframe.contentWindow.document;
+  }
+  doc.open()._l = function() {
+    var js = this.createElement("script");
+    if(dom) this.domain = dom;
+    js.id = "boomr-if-as";
+    js.src = 'https://c.go-mpulse.net/boomerang/' + '24NZM-B6VZ9-PPXQV-ZEDGN-26VWA';
+    BOOMR_lstart=new Date().getTime();
+    this.body.appendChild(js);
+  };
+  doc.write('<body onload="document._l();">');
+  doc.close();
+  })();
+
 var start = new Date().getTime();
 function addScript(url) {
 	var s = document.createElement("script");
@@ -13,14 +39,33 @@ function addScript(url) {
 	where.parentNode.insertBefore(s, where);
 }
 
-function show_resources()
+function show_resources(w, pre, pad)
 {
-	var resel = document.getElementById("results");
+	if (!pre) {
+		pre = document.getElementById("results");
+		pre.innerHTML = "";
+	}
 
-	var res = window.performance.getEntries();
-	resel.innerHTML = "";
-	res.forEach(function(r) {
-		resel.innerHTML += "\n\n" + r.name + "\n\tStartTime: " + r.startTime + "\n\tDuration: " + r.duration;
+	if (!pad) {
+		pad = "";
+	}
+	if (!w) {
+		w = window;
+	}
+
+	try {
+		var res = w.performance.getEntries();
+		res.forEach(function(r) {
+			pre.innerHTML += "\n\n" + pad + r.name + "\n\t" + pad + "StartTime: " + r.startTime + "\n\t" + pad + "Duration: " + r.duration;
+		});
+	}
+	catch(e) {
+	}
+
+	var frames = w.frames;
+	Array.prototype.forEach.call(frames, function(f) {
+		pre.innerHTML += "\n\n" + pad + "Frame: " + f.name;
+		show_resources(f, pre, pad + "\t");
 	});
 }
 
