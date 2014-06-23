@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Getting resources</title>
+<link rel="stylesheet" href="02-1-restiming.css">
+<script src="02-2-restiming.js"></script>
+<script>
+var start = new Date().getTime();
+function addScript(url) {
+	var s = document.createElement("script");
+	s.src=url;
+	var where = document.getElementsByTagName("script")[0];
+	where.parentNode.insertBefore(s, where);
+}
+
+function show_resources()
+{
+	var resel = document.getElementById("results");
+
+	var res = window.performance.getEntries();
+	res.forEach(function(r) {
+		resel.innerHTML += r.name + "\n\tDuration: " + r.duration + "\n\tStartTime: " + r.startTime;
+	});
+}
+
+addScript("02-3-restiming.js");
+window.addEventListener("load", function() { addScript("02-4-restiming.js"); }, false);
+window.setTimeout(function() { addScript("02-5-restiming.js"); }, 3000);
+</script>
+</head>
+<body>
+<img src="http://cdn.oreillystatic.com/en/assets/1/eventseries/11/velocity_franchise_logo.png">
+</body>
+<a href="javascipt:false" onclick="show_resources()">Show Resources</a>
+<pre id="results">
+</pre>
+</html>
+
