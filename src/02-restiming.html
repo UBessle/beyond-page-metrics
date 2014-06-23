@@ -19,7 +19,7 @@ function show_resources()
 
 	var res = window.performance.getEntries();
 	res.forEach(function(r) {
-		resel.innerHTML += r.name + "\n\tDuration: " + r.duration + "\n\tStartTime: " + r.startTime;
+		resel.innerHTML += "\n\n" + r.name + "\n\tDuration: " + r.duration + "\n\tStartTime: " + r.startTime;
 	});
 }
 
