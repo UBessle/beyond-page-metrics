@@ -9,16 +9,20 @@
 <script>
 BOOMR.init({autorun: false});
 var start = new Date().getTime();
-function addScript(url) {
+function addScript(url, callback) {
 	var s = document.createElement("script");
 	s.src=url;
+	if (callback) {
+		s.onload = callback;
+		s.onerror = callback;
+	}
 	var where = document.getElementsByTagName("script")[0];
 	where.parentNode.insertBefore(s, where);
 }
 
 addScript("02-3-restiming.js");
 window.addEventListener("load", function() { addScript("02-4-restiming.js"); }, false);
-window.setTimeout(function() { addScript("02-5-restiming.js"); BOOMR.page_ready(); }, 3000);
+window.setTimeout(function() { addScript("02-5-restiming.js", BOOMR.page_ready); }, 3000);
 
 BOOMR.subscribe('before_beacon', function(o) {
 	var html = "", others = [];
