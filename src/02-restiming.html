@@ -55,8 +55,20 @@ function show_resources(w, pre, pad)
 
 	try {
 		var res = w.performance.getEntries();
-		res.forEach(function(r) {
+		var images = w.document.getElementsByTagName("img");
+		var resimages = {};
+
+		Array.prototype.forEach.call(res, function(r) {
 			pre.innerHTML += "\n\n" + pad + r.name + "\n\t" + pad + "StartTime: " + r.startTime + "\n\t" + pad + "Duration: " + r.duration;
+			if (r.initiatorType === "img") {
+				resimages[r.name] = 1;
+			}
+		});
+
+		Array.prototype.forEach.call(images, function(r) {
+			if(r.src && !resimages[r.src]) {
+				pre.innerHTML += "\n\n" + pad + r.src + "\n\t" + pad + "Not Listed";
+			}
 		});
 	}
 	catch(e) {
