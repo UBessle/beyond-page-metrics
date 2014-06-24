@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Measuring a widget</title>
+<link rel="stylesheet" href="02-1-restiming.css">
+<script>
+function measure_twitter() {
+	var i, j, first, last, entries, twentries = [], frames = window.frames;
+
+	entries = performance.getEntries();
+	for (i=0; i<entries.length; i++) {
+		if (entries[i].name.match(/(platform\.twitter\.com|\.twimg\.com)/)) {
+			if (first === undefined) first = entries[i];
+			if (last === undefined) last = entries[i];
+			if (entries[i].requestStart < first.requestStart) first = entries[i];
+			if (entries[i].responseEnd > last.responseEnd) last = entries[i];
+			twentries.push(entries[i].name);
+		}
+	}
+	for (j=0; j<frames.length; j++) {
+		entries = frames[j].performance.getEntries();
+		for (i=0; i<entries.length; i++) {
+			if (entries[i].name.match(/(platform\.twitter\.com|\.twimg\.com)/)) {
+				if (first === undefined) first = entries[i];
+				if (last === undefined) last = entries[i];
+				if (entries[i].requestStart < first.requestStart) first = entries[i];
+				if (entries[i].responseEnd > last.responseEnd) last = entries[i];
+				twentries.push(entries[i].name);
+			}
+		}
+	}
+
+	var pre = document.getElementById("results");
+	pre.innerHTML = "Twitter took " + (last.responseEnd - first.startTime) + "ms to load"
+			+ " and included:\n\n\t" + twentries.toString().replace(/,/g, "\n\t");
+}
+</script>
+</head>
+<body>
+<a class="twitter-timeline" href="https://twitter.com/hashtag/velocityconf" data-widget-id="481490331725090818">#velocityconf Tweets</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<p>
+<a href="javascipt:false" onclick="measure_twitter()">Show Resources</a>
+</p>
+<pre id="results">
+</pre>
+</body>
+</html>
+
+
