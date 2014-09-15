@@ -5,19 +5,23 @@
 </head>
 <body>
 <script>
-(function() {
-var req;
 instrumentXHR();
 
+function load(url) {
+var req;
+
 req = new XMLHttpRequest();
-req.open("GET", "instrument-xhr-test.html", true);
+req.open("GET", url, true);
 
 req.addEventListener("loadend", function() {
 	console.log(req.performance);
 }, false);
 
 req.send();
-})();
+}
+
+load("instrument-xhr-test.html");
+load("broken-url");
 </script>
 </body>
 </html>
