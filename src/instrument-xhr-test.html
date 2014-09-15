@@ -5,6 +5,8 @@
 </head>
 <body>
 <script>
+instrumentXHR();
+
 var xhr = new XMLHttpRequest();
 var req = xhr.open("GET", "instrument-xhr-test.html", true);
 req.addEventListener("loadend", function() {
