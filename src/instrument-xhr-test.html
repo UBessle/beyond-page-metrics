@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+<script src="instrument-xhr.js"></script>
+</head>
+<body>
+<script>
+var xhr = new XMLHttpRequest();
+var req = xhr.open("GET", "instrument-xhr-test.html", true);
+req.addEventListener("loadend", function() {
+	console.log(req.performance);
+}, false);
+req.send();
+</script>
+</body>
+</html>
