@@ -6,11 +6,11 @@
 <body>
 <script>
 (function() {
-var xhr, req;
+var req;
 instrumentXHR();
 
-xhr = new XMLHttpRequest();
-req = xhr.open("GET", "instrument-xhr-test.html", true);
+req = new XMLHttpRequest();
+req.open("GET", "instrument-xhr-test.html", true);
 
 req.addEventListener("loadend", function() {
 	console.log(req.performance);
