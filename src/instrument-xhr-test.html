@@ -13,6 +13,7 @@ var req;
 req = new XMLHttpRequest();
 req.open("GET", url, true);
 
+req.timeout = 5000;
 req.addEventListener("loadend", function() {
 	console.log(req.performance);
 }, false);
