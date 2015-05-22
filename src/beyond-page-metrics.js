@@ -38,7 +38,7 @@ function findPossibleSpofs(ms) {
   for (var i=0;i<res.length;i++) {
     var isSpof = true;
     for (var j=0;j<res.length;j++) {
-      if (res[i].name != res[j].name && 
+      if (res[i].name != res[j].name &&
         (res[j].startTime > res[i].startTime && res[j].startTime < res[i].responseEnd) ||
         (res[j].endTime > res[i].startTime && res[j].endTime < res[i].responseEnd) ||
         (res[j].startTime < res[i].startTime && res[j].endTime > res[i].responseEnd)) {
@@ -50,23 +50,32 @@ function findPossibleSpofs(ms) {
   return spofs;
 }
 
-function findPerfByHost() {
+function findPerfByHost(hosts) {
   var res = performance.getEntriesByType("resource"), obj={};
   for (var i=0;i<res.length;i++) {
     var start = res[i].name.indexOf("://")+3,
       host = res[i].name.substring(start),
       end = host.indexOf("/");
     host = host.substring(0,end);
-    if (obj[host]) {
-      obj[host].resources += 1;
-      obj[host].duration += res[i].duration;
-      if (res[i].duration < obj[host].min) obj[host].min = res[i].duration;
-      if (res[i].duration > obj[host].max) obj[host].max = res[i].duration;
-      obj[host].avg = obj[host].duration / obj[host].resources;
+    if (hosts && hosts.indexOf(host) === -1) {
+      continue;
     }
-    else {
-      obj[host] = {"duration": res[i].duration, "min": res[i].duration, "max": res[i].duration, "avg": res[i].duration, "resources": 1};
+
+    function upsert(host) {
+      if (obj[host]) {
+        obj[host].resources += 1;
+        obj[host].duration += res[i].duration;
+        if (res[i].duration < obj[host].min) obj[host].min = res[i].duration;
+        if (res[i].duration > obj[host].max) obj[host].max = res[i].duration;
+        obj[host].avg = obj[host].duration / obj[host].resources;
+      }
+      else {
+        obj[host] = {"duration": res[i].duration, "min": res[i].duration, "max": res[i].duration, "avg": res[i].duration, "resources": 1};
+      }
     }
+
+    upsert(host);
+    upsert("_all");
   }
   return obj;
 }
